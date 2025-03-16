@@ -35,8 +35,36 @@ const favoriteBlog = (blogs) => {
   };
 };
 
+const mostBlogs = (blogs) => {
+  let authorArray = [];
+
+  blogs.map((blog) => {
+    authorArray.push(blog.author);
+  });
+
+  const countStrings = (arr) => {
+    return arr.reduce((acc, str) => {
+      acc[str] = (acc[str] || 0) + 1;
+      return acc;
+    }, {});
+  };
+
+  const authorBlogNum = countStrings(authorArray);
+
+  const getLargestPair = (obj) => {
+    return Object.entries(obj).reduce((maxPair, currentPair) =>
+      currentPair[1] > maxPair[1] ? currentPair : maxPair
+    );
+  };
+
+  const keyValuePair = getLargestPair(authorBlogNum);
+
+  return { author: keyValuePair[0], blogs: keyValuePair[1] };
+};
+
 module.exports = {
   dummy,
   totalLikes,
   favoriteBlog,
+  mostBlogs,
 };
