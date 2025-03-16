@@ -62,9 +62,27 @@ const mostBlogs = (blogs) => {
   return { author: keyValuePair[0], blogs: keyValuePair[1] };
 };
 
+const mostLikes = (blogs) => {
+  const authorLikes = blogs.reduce((acc, blog) => {
+    acc[blog.author] = (acc[blog.author] || 0) + blog.likes;
+    return acc;
+  }, {});
+
+  const getLargestPair = (obj) => {
+    return Object.entries(obj).reduce((maxPair, currentPair) =>
+      currentPair[1] > maxPair[1] ? currentPair : maxPair
+    );
+  };
+
+  const keyValuePair = getLargestPair(authorLikes);
+
+  return { author: keyValuePair[0], likes: keyValuePair[1] };
+};
+
 module.exports = {
   dummy,
   totalLikes,
   favoriteBlog,
   mostBlogs,
+  mostLikes,
 };
