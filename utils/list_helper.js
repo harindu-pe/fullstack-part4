@@ -13,7 +13,30 @@ const totalLikes = (blogs) => {
   return sum;
 };
 
+const favoriteBlog = (blogs) => {
+  let highest_likes = 0;
+  let highest_likes_id = 0;
+
+  blogs.map((blog) => {
+    if (blog.likes > highest_likes) {
+      highest_likes = blog.likes;
+      highest_likes_id = blog._id;
+    }
+  });
+
+  const highest_liked_blog = blogs.find(
+    (blog) => blog._id === highest_likes_id
+  );
+
+  return {
+    title: highest_liked_blog.title,
+    author: highest_liked_blog.author,
+    likes: highest_liked_blog.likes,
+  };
+};
+
 module.exports = {
   dummy,
   totalLikes,
+  favoriteBlog,
 };
