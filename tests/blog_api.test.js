@@ -75,3 +75,19 @@ test("a valid blog post can be added", async () => {
 
   assert(titles.includes("Blog Post 1"));
 });
+
+test("likes default to 0 if missing", async () => {
+  const newBlogPost = {
+    title: "Blog Post 4",
+    author: "The Other Other Blaze",
+    url: "Blog URL",
+  };
+
+  const response = await api
+    .post("/api/blogs")
+    .send(newBlogPost)
+    .expect(201)
+    .expect("Content-Type", /application\/json/);
+
+  assert.strictEqual(response.body.likes, 0);
+});
