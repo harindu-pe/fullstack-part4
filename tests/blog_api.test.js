@@ -145,3 +145,32 @@ test("successfully deletes a blog with valid id", async () => {
   const blogsAfter = await BlogPost.find({});
   assert.strictEqual(blogsAfter.length, 0);
 });
+
+test("successfully updates likes of a blog", async () => {
+  await BlogPost.deleteMany({});
+
+  const newBlogPost = {
+    title: "Blog to Update",
+    author: "The Other Other Blaze",
+    url: "Blog URL",
+    likes: 5,
+  };
+
+  const blogToUpdate = await api
+    .post("/api/blogs")
+    .send(newBlogPost)
+    .expect(201)
+    .expect("Content-Type", /application\/json/);
+
+  let blogToUpdateId = blogToUpdate.body.id;
+
+  const updatedLikes = { likes: 10 };
+
+  const response = await api
+    .put(`/api/blogs/${blogToUpdateId}`)
+    .send(updatedLikes)
+    .expect(200)
+    .expect("Content-Type", /application\/json/);
+
+  assert.strictEqual(response.body.likes, 10);
+});
