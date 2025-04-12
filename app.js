@@ -13,4 +13,13 @@ app.use(express.json());
 
 app.use("/api/blogs", blogsRouter);
 
+const errorHandler = (err, req, res, next) => {
+  if (err.name === "ValidationError") {
+    return res.status(400).json({ error: err.message });
+  }
+  next(err);
+};
+
+app.use(errorHandler);
+
 module.exports = app;

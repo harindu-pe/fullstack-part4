@@ -91,3 +91,33 @@ test("likes default to 0 if missing", async () => {
 
   assert.strictEqual(response.body.likes, 0);
 });
+
+test("responds with 400 if title is missing", async () => {
+  const blogWithoutTitle = {
+    author: "The Other Other Blaze",
+    url: "Blog URL",
+    likes: 8,
+  };
+
+  const response = await api
+    .post("/api/blogs")
+    .send(blogWithoutTitle)
+    .expect(400);
+
+  assert.strictEqual(response.body.error !== undefined, true);
+});
+
+test("responds with 400 if url is missing", async () => {
+  const blogWithoutUrl = {
+    title: "Blog Post 4",
+    author: "The Other Other Blaze",
+    likes: 8,
+  };
+
+  const response = await api
+    .post("/api/blogs")
+    .send(blogWithoutUrl)
+    .expect(400);
+
+  assert.strictEqual(response.body.error !== undefined, true);
+});
