@@ -30,6 +30,10 @@ beforeEach(async () => {
   await blogPostObject.save();
 });
 
+after(async () => {
+  await mongoose.connection.close();
+});
+
 test("there are two blog posts", async () => {
   const response = await api.get("/api/blogs");
 
@@ -49,6 +53,25 @@ test("blog posts return with id property", async () => {
   }
 });
 
-after(async () => {
-  await mongoose.connection.close();
+test("a valid blog post can be added", async () => {
+  const newBlogPost = {
+    title: "Blog Post 3",
+    author: "The Other Other Blaze",
+    url: "Blog URL",
+    likes: 5,
+  };
+
+  await api
+    .post("/api/blogs")
+    .send(newBlogPost)
+    .expect(201)
+    .expect("Content-Type", /application\/json/);
+
+  const response = await api.get("/api/blogs");
+
+  const titles = response.body.map((r) => r.title);
+
+  assert.strictEqual(response.body.length, initialBlogPosts.length + 1);
+
+  assert(titles.includes("Blog Post 1"));
 });
