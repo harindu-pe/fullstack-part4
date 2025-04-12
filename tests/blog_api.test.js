@@ -121,3 +121,27 @@ test("responds with 400 if url is missing", async () => {
 
   assert.strictEqual(response.body.error !== undefined, true);
 });
+
+test("successfully deletes a blog with valid id", async () => {
+  await BlogPost.deleteMany({});
+
+  const newBlogPost = {
+    title: "Blog to Delete",
+    author: "The Other Other Blaze",
+    url: "Blog URL",
+    likes: 5,
+  };
+
+  const response = await api
+    .post("/api/blogs")
+    .send(newBlogPost)
+    .expect(201)
+    .expect("Content-Type", /application\/json/);
+
+  let blogToDeleteId = response.body.id;
+
+  await api.delete(`/api/blogs/${blogToDeleteId}`).expect(204);
+
+  const blogsAfter = await BlogPost.find({});
+  assert.strictEqual(blogsAfter.length, 0);
+});
