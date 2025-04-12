@@ -32,6 +32,23 @@ beforeEach(async () => {
 
 test("there are two blog posts", async () => {
   const response = await api.get("/api/blogs");
-  console.log(response);
+
   assert.strictEqual(response.body.length, initialBlogPosts.length);
+});
+
+test("blog posts return with id property", async () => {
+  const response = await api.get("/api/blogs");
+
+  for (const blog of response.body) {
+    assert.ok(blog.id, "Expected blog.id to be defined");
+    assert.strictEqual(
+      blog._id,
+      undefined,
+      "Expected blog._id to be undefined"
+    );
+  }
+});
+
+after(async () => {
+  await mongoose.connection.close();
 });
