@@ -4,7 +4,6 @@ const mongoose = require("mongoose");
 const supertest = require("supertest");
 const app = require("../app");
 
-
 const api = supertest(app);
 const assert = require("node:assert");
 
@@ -32,6 +31,7 @@ beforeEach(async () => {
 });
 
 after(async () => {
+  await BlogPost.deleteMany({});
   await mongoose.connection.close();
 });
 
