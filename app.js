@@ -15,9 +15,16 @@ app.use(express.json());
 app.use("/api/blogs", blogsRouter);
 app.use("/api/users", usersRouter);
 
-const errorHandler = (err, req, res, next) => {
-  if (err.name === "ValidationError") {
-    return res.status(400).json({ error: err.message });
+const errorHandler = (error, request, response, next) => {
+  if (error.name === "ValidationError") {
+    return response.status(400).json({ error: error.message });
+  } else if (
+    error.name === "MongoServerError" &&
+    error.message.includes("E11000 duplicate key error")
+  ) {
+    return response
+      .status(400)
+      .json({ error: "expected `username` to be unique" });
   }
   next(err);
 };
