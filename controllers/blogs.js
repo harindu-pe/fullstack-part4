@@ -14,29 +14,16 @@ blogsRouter.get("/", async (request, response) => {
 blogsRouter.post("/", async (request, response, next) => {
   const body = request.body;
 
-  const newBlogPost = {
-    title: body.title,
-    author: body.author,
-    url: body.url,
-    likes: body.likes,
-    user: user._id,
-  };
-
   try {
-    const decodedToken = jwt.verify(request.token, process.env.SECRET);
+    const user = request.user;
 
-    if (!decodedToken.id) {
-      return response.status(401).json({ error: "token invalid" });
-    }
-
-    const user = await User.findById(decodedToken.id);
-
-    if (!user) {
-      return response
-        .status(400)
-        .json({ error: "UserId missing or not valid" });
-    }
-
+    const newBlogPost = {
+      title: body.title,
+      author: body.author,
+      url: body.url,
+      likes: body.likes,
+      user: user._id,
+    };
     const blog = new Blog(newBlogPost);
     const result = await blog.save();
     user.blogs = user.blogs.concat(result._id);
@@ -50,19 +37,7 @@ blogsRouter.post("/", async (request, response, next) => {
 
 blogsRouter.delete("/:id", async (request, response, next) => {
   try {
-    const decodedToken = jwt.verify(request.token, process.env.SECRET);
-
-    if (!decodedToken.id) {
-      return response.status(401).json({ error: "token invalid" });
-    }
-
-    const user = await User.findById(decodedToken.id);
-
-    if (!user) {
-      return response
-        .status(400)
-        .json({ error: "UserId missing or not valid" });
-    }
+    const user = request.user;
 
     const blog = await Blog.findById(request.params.id);
 
